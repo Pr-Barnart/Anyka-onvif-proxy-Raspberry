@@ -1,13 +1,13 @@
 logLevel: debug
 logDestinations: [stdout, file]
-logFile: /home/art/onvif_proxy/mediamtx.log
+logFile: /home/YOUR_USERNAME/onvif_proxy/mediamtx.log
 
 rtspAddress: :554
 protocols: [tcp]
 
 paths:
   vs0:
-    source: rtsp://192.168.0.81:554/vs0
+    source: rtsp://CAMERA_IP:554/vs0
     sourceProtocol: tcp
     sourceOnDemand: yes
 
