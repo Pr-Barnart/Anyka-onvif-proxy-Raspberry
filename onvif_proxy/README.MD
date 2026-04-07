@@ -11,11 +11,11 @@ I had to use onvif version 2.0, because v1.0 seems to lack ptz GetDeviceInformat
 
 GetNetworkDefaultGatewayResponse is set to 192.168.0.1 ( change to yours) GetVideoSourceConfigurationOptionsResponse :MaximumNumberOfProfiles is set to 1 ( I just need 1) The other setting are default settings for an anyka_ip_camera
 
-The requests are logged in request.log THe responses are lohgged in responses.log (Set the path for your enverioment.
+The requests are logged in request.log The responses are logged in responses.log (Set the path for your enverioment).
 
 At the start WS discovery is initiated
 
-The proxy runs wioth python3
+The proxy runs with python3
 
 # Mediamtx 
 Install medimtx
