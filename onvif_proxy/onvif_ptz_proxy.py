@@ -12,10 +12,10 @@ import cv2
 app = Flask(__name__)
 
 # ===================== CONFIG =====================
-CAMERA_IP        = "192.168.0.80"
-CAMERA_PTZ_PORT  = 8080          # PTZ web interface  -> http://192.168.0.80:8080/cgi-bin/webui?command=...
-CAMERA_RTSP_PORT = 554           # RTSP stream        -> rtsp://192.168.0.80:554/vs0
-PROXY_IP         = "192.168.0.25"
+CAMERA_IP        = YOUR_CAMERA_IP"
+CAMERA_PTZ_PORT  = 8080          # PTZ web interface  -> http://YOUR_CAMERA_IP:8080/cgi-bin/webui?command=...
+CAMERA_RTSP_PORT = 554           # RTSP stream        -> rtsp://YOUR_CAMERA_IP:554/vs0
+PROXY_IP         = "YOUR_PROXY_IP"
 PROXY_PORT       = 8090          # This proxy's HTTP port
 PTZ_DAEMON_FILE  = "/tmp/ptz.daemon"
 
@@ -487,7 +487,7 @@ def onvif():
   <s:Body>
     <tds:GetNetworkDefaultGatewayResponse>
       <tds:NetworkGateway>
-        <tds:IPv4Address>192.168.0.1</tds:IPv4Address>
+        <tds:IPv4Address>YOUR_GATEWAY_IP</tds:IPv4Address>
       </tds:NetworkGateway>
     </tds:GetNetworkDefaultGatewayResponse>
   </s:Body>
@@ -994,11 +994,11 @@ def onvif():
 </s:Envelope>"""
 
     # ---------- Logging ----------
-    os.makedirs("/home/art/onvif_proxy", exist_ok=True)
+    os.makedirs("/home/YOUR_USERNAME/onvif_proxy", exist_ok=True)
     now = datetime.datetime.now()
-    with open("/home/art/onvif_proxy/requests.log", "a") as f:
+    with open("/home/YOUR_USERNAME/onvif_proxy/requests.log", "a") as f:
         f.write(f"\n--- REQUEST {now} ---\n{xml}\n")
-    with open("/home/art/onvif_proxy/responses.log", "a") as f:
+    with open("/home/YOUR_USERNAME/onvif_proxy/responses.log", "a") as f:
         f.write(f"\n--- RESPONSE {now} ---\n{response}\n")
 
     return Response(response, content_type="application/soap+xml")
