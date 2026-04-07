@@ -10,6 +10,7 @@ It was quit a journey for me, because I am not used to Linux, and I didn't know 
 In that journey I also tried to use OnVif Device Manager (ODM).
 
 I had to migrate ODM to 4.8 framework, to use it for debugging the general traffic, requests en responses.
+
 Migrated ODM available here: 
 
 # Raspberry pi onvif proxy, with mediamtx 
