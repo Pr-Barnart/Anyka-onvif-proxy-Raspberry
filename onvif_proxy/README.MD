@@ -39,7 +39,8 @@ inhoud:
 
 [Install] WantedBy=multi-user.target
 
-start sudo systemctl enable onvif_proxy sudo systemctl start onvif_proxy
+start:
+- sudo systemctl enable onvif_proxy sudo systemctl start onvif_proxy
 
 
 Create systemd service for mediamtx 
@@ -53,4 +54,5 @@ Inhoud:
 
 [Install] WantedBy=multi-user.target
 
-Start sudo systemctl enable mediamtx sudo systemctl start mediamtx
+Start:
+- sudo systemctl enable mediamtx sudo systemctl start mediamtx
