@@ -27,7 +27,7 @@ Mediamtx.yml for the config:
 - ./mediamtx > mediamtx.log 2>&1 & 
 - ./anyka_onvif_ptz > onvif.log 2>&1 &
 
-#Permament proxy 
+# Permament proxy 
 Create  systemd service for the proxy 
 - sudo nano /etc/systemd/system/onvif_proxy.service 
 
