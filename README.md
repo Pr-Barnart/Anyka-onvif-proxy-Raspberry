@@ -1,49 +1,203 @@
-# Starting point and goal
-I have two cheap ip-cameras for fun, ANYKA based, which I want to connect to my old synologu ds412+ with serveillance staion (ss).
+# 📷 ANYKA IP Camera → Synology Surveillance Station (ONVIF + PTZ via Raspberry Pi)
 
-I made an sd-card hack ( Thanks to https://github.com/MuhammedKalkan/Anyka-Camera-Firmware ),but that hack lacked ONVIF with PTZ
+This project enables cheap **ANYKA-based IP cameras** to work with **Synology Surveillance Station (SS)** using:
 
-As a possible solution, I decided to build be a proxy with onvif(ptz included) on a raspberry pi  and a direct rtsp stream from the camera.
+* ✅ ONVIF (including PTZ)
+* ✅ RTSP streaming
+* ✅ Raspberry Pi as a proxy layer
 
-It was quit a journey for me, because I am not used to Linux, and I didn't know much about onvif and there was no documentation how ss connects with onvif.
+---
 
-In that journey I also tried to use OnVif Device Manager (ODM).
+## 🚀 Overview
 
-I had to migrate ODM to 4.8 framework, to use it for debugging the general traffic, requests en responses.
+Cheap ANYKA cameras with a SD_card hack  
 
-Migrated ODM available here: 
+* provide RTSP streams
+* lack proper ONVIF (especially PTZ)
 
-# Raspberry pi onvif proxy, with mediamtx 
-I ended up with a proxy, succesfully connecting to SS. But SS doesnot support the rtsp stream from a different ip. 
+This solution adds:
 
-So I had to use mediamtx to get the stream from my camera to the raspberry pi, and serve it from there to SS
+* an **ONVIF proxy (Python)** for control (PTZ included)
+* **MediaMTX** to relay the RTSP stream
 
-# Base raspberry pi
-I used 2025-12-04-raspios-trixie-armhf.img as system for my raspberry pi 3b
-- Added a user and password.
-- In my home directory I made a directory onvif_proxy
-- 
-I ended up woth onvif_ptz_proxy.py, running with python3
+### Final architecture
 
-I had to install mediamtx to redirect the stream for my camera=>Pi=>SS
+```
+Camera → Raspberry Pi (ONVIF proxy + MediaMTX) → Synology Surveillance Station
+```
 
-# ONVIF_PTZ_PROXY
-see the readme.md in ONVIF_PTZ_Proxy for more details
+---
 
-# Connecting to SS Synology
-With mediamtx en onvif_ptz_proxy running
-- start serveillance station
-- select ip-camera from the menu
-- select add => add camera
-Add camera:
-  - quick install -> next
-  - name: YOUR  CHOICE
-  - IP_address: CAMERA_IP
-  - Port: 8081
-  - Brand [ONVIF]
-  - Model: all functions
-  - UserName: blank
-  - Password: blank
+## ⚠️ Key Limitation (and Solution)
 
-- click test connection: if OK -> next
-- click complete.
+**Problem:**
+Synology Surveillance Station requires the ONVIF endpoint and RTSP stream to come from the **same IP address**.
+
+**Solution:**
+Use MediaMTX on the Raspberry Pi to:
+
+* pull RTSP from the camera
+* re-serve it locally
+
+---
+
+## 🧰 Requirements
+
+### Hardware
+
+* ANYKA-based IP camera
+* Raspberry Pi (tested on Pi 3B)
+* Synology NAS (DS412+ in this case)
+
+### Software
+
+* Raspberry Pi OS (tested with):
+
+  ```
+  2025-12-04-raspios-trixie-armhf.img
+  ```
+* Python 3
+* MediaMTX
+* ONVIF PTZ Proxy (this project)
+
+---
+
+## 🔧 Raspberry Pi Setup
+
+### 1. Base system
+
+* Install Raspberry Pi OS
+* Create a user/password
+* SSH into the Pi
+
+### 2. Create project directory
+
+```bash
+mkdir ~/onvif_proxy
+cd ~/onvif_proxy
+```
+
+---
+
+## 📡 Install MediaMTX
+
+Download and install MediaMTX:
+
+```bash
+wget https://github.com/bluenviron/mediamtx/releases/latest/download/mediamtx_linux_armv7.tar.gz
+tar -xvzf mediamtx_linux_armv7.tar.gz
+```
+
+### Configure stream (example)
+
+Edit `mediamtx.yml`:
+
+```yaml
+paths:
+  cam:
+    source: rtsp://CAMERA_IP:554/your_stream
+```
+
+Start MediaMTX:
+
+```bash
+./mediamtx
+```
+
+---
+
+## 🧠 ONVIF PTZ Proxy
+
+Run the proxy:
+
+```bash
+python3 onvif_ptz_proxy.py
+```
+
+👉 See the `ONVIF_PTZ_Proxy/README.md` for:
+
+* PTZ implementation details
+* Supported ONVIF commands
+* Configuration options
+
+---
+
+## 🔍 SidePath
+
+I used **ONVIF Device Manager (ODM)** (open source) for learning ONVIF 
+
+Therefore I needed to migrate the repository to framework 4.8, so I could debug it with vs2022. ( I am a windows user;-)
+
+* Useful for inspecting while debugging:
+
+  * SOAP requests
+  * proper PTZ commands
+  * proper responses
+    
+* ODM migrated **.NET Framework 4.8** available here.
+---
+
+## 📺 Synology Surveillance Station Setup
+With medimtx and the proxy running
+### Add camera
+
+1. Open **Surveillance Station**
+2. Go to **IP Camera**
+3. Click **Add → Add Camera**
+
+### Configuration
+
+| Setting      | Value          |
+| ------------ | -------------- |
+| Install Type | Quick Install  |
+| Name         | Anything       |
+| IP Address   | `CAMERA_IP` ⚠️ |
+| Port         | `8081`         |
+| Brand        | ONVIF          |
+| Model        | All Functions  |
+| Username     | *(empty)*      |
+| Password     | *(empty)*      |
+
+### Steps
+
+* Click **Test Connection**
+* If successful → **Next**
+* Click **Complete**
+
+---
+
+## ✅ Result
+
+You now have:
+
+* 🎥 Live video in Surveillance Station
+* 🎮 PTZ control via ONVIF
+* 🔁 RTSP correctly routed through Raspberry Pi
+
+---
+
+## 💡 Notes
+
+* The proxy handles ONVIF → camera communication
+* MediaMTX ensures SS sees both ONVIF + RTSP from the same IP
+* Works with very cheap ANYKA cameras that normally lack proper support
+
+---
+
+## 🙏 Credits
+
+* ANYKA firmware hack:
+  [https://github.com/MuhammedKalkan/Anyka-Camera-Firmware](https://github.com/MuhammedKalkan/Anyka-Camera-Firmware)
+
+* MediaMTX:
+  [https://github.com/bluenviron/mediamtx](https://github.com/bluenviron/mediamtx)
+
+---
+
+## 📌 Future Improvements
+
+* Auto-start services (systemd) - see read.me in onvif_proxy
+* Integrate the ONVIF with ptz support in the SD-card hack - so no proxy needed anymore.
+Result: https://github.com/Pr-Barnart/anyka_onvif_ptz-with-synology-serveillance-station (succes)
+
+---
