@@ -134,7 +134,7 @@ Therefore I needed to migrate the repository to framework 4.8, so I could debug 
   * proper PTZ commands
   * proper responses
     
-* ODM migrated **.NET Framework 4.8** available here.
+* ODM migrated **.NET Framework 4.8** available here https://github.com/Pr-Barnart/Onvif-Device-Manager-ODM-vs2022-framework-4.8.
 ---
 
 ## 📺 Synology Surveillance Station Setup
